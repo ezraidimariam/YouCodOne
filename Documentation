@@ -1,0 +1,105 @@
+1. Qu’est-ce que Laravel Breeze et quelle différence avec Jetstream ?
+🔹 Laravel Breeze
+
+Laravel Breeze est un starter kit d’authentification simple fourni par Laravel.
+
+Il inclut :
+
+Login
+
+Register
+
+Reset password
+
+Vérification email
+
+Middleware auth
+
+Pages Blade simples
+
+Vite + Tailwind
+
+👉 C’est léger, rapide à installer, et parfait pour les petits projets.
+
+🔹 Laravel Jetstream
+
+Laravel Jetstream est un starter kit plus avancé.
+
+Il inclut tout ce que Breeze a, en plus :
+
+Gestion des profils
+
+2FA (double authentification)
+
+Sessions multiples
+
+Teams (équipes)
+
+API Tokens
+
+Livewire ou Inertia (SPA)
+
+🔍 Différence principale
+Breeze	Jetstream
+Léger	Avancé
+Blade simple	Livewire / Inertia
+Auth basique	Auth + sécurité avancée
+Débutants	Projets complexes
+2. Comment ajouter une colonne personnalisée dans la table users ?
+Étapes :
+1️⃣ Créer une migration
+php artisan make:migration add_role_to_users_table
+
+2️⃣ Modifier la migration
+
+Dans database/migrations/...add_role_to_users_table.php :
+
+public function up()
+{
+    Schema::table('users', function (Blueprint $table) {
+        $table->string('role')->default('client');
+    });
+}
+
+3️⃣ Lancer la migration
+php artisan migrate
+
+
+👉 La colonne role sera ajoutée dans la table users.
+
+3. Comment protéger une route pour les utilisateurs connectés seulement ?
+
+On utilise le middleware auth.
+
+Exemple :
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth');
+
+
+Ou avec groupe :
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index']);
+});
+
+
+👉 Seuls les utilisateurs connectés peuvent accéder.
+
+4. Quelle méthode PHP utilise-t-on pour vérifier le rôle d’un user ?
+
+Dans Laravel :
+
+auth()->user()->role
+
+Exemple :
+if (auth()->user()->role === 'restaurateur') {
+    // accès autorisé
+}
+
+
+Ou dans Blade :
+
+@if(auth()->user()->role === 'client')
+    <p>Bienvenue client</p>
+@endif
