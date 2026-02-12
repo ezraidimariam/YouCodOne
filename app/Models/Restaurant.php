@@ -19,4 +19,9 @@ class Restaurant extends Model
     public function owner(){
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function users()
+{
+    return $this->belongsToMany(User::class, 'user_favorites');
+}
+
 }

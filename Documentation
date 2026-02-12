@@ -98,6 +98,14 @@ if (auth()->user()->role === 'restaurateur') {
 }
 
 
+attach() → ajoute une relation.
+
+detach() → supprime une relation.
+
+sync() → remplace toutes les relations par celles données.
+
+// on peut les utliser pour la gestion des donnes 
+
 Ou dans Blade :
 
 @if(auth()->user()->role === 'client')

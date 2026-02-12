@@ -1,35 +1,42 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\FavoriteController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+|--------------------------------------------------------------------------
+| Public routes (sans login)
+|--------------------------------------------------------------------------
+*/
+Route::get('/', fn () => view('welcome'));
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
+Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
-// All routes for authenticated users
-Route::middleware('auth')->group(function () {
 
-    // Profile routes
+Route::middleware(['auth'])->group(function () {
+
+    // CRUD Restaurants (sauf index & show)
+    Route::resource('restaurants', RestaurantController::class)
+        ->except(['index', 'show']);
+
+    // Favoris
+    Route::post('/favorites/{restaurant}', [FavoriteController::class, 'toggle'])
+        ->name('favorites.toggle');
+
+    Route::get('/mes-favoris', [FavoriteController::class, 'index'])
+        ->name('favorites.index');
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Client-only route
-    Route::get('/client', function () {
-        return 'Client space';
-    })->middleware('can:isClient');
-
-    // Restaurateur-only route
-    Route::get('/restaurateur', function () {
-        return 'Restaurateur space';
-    })->middleware('can:isRestaurateur');
-
+    // Role spaces (via Gates)
+    Route::get('/client', fn () => 'Client space')->middleware('can:isClient');
+    Route::get('/restaurateur', fn () => 'Restaurateur space')->middleware('can:isRestaurateur');
 });
 
 require __DIR__.'/auth.php';
-    

@@ -21,6 +21,9 @@ class RegisteredUserController extends Controller
     {
         return view('auth.register');
     }
+   public function exist(){
+        return  view('app.php');
+   }
 
     /**
      * Handle an incoming registration request.
