@@ -18,4 +18,8 @@ class Reservation extends Model
         return $this->belongsTo(Restaurant::class);
 
     }
+   public function payment()
+{
+    return $this->hasOne(payment::class);
+}
 }
